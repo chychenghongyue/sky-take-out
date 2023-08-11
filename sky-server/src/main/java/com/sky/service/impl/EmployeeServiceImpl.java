@@ -1,15 +1,19 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import com.sky.utils.SnowFlakeUtil;
 import org.springframework.beans.BeanUtils;
@@ -18,13 +22,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
+    private final SnowFlakeUtil snowFlakeUtil = new SnowFlakeUtil();
     @Autowired
     private EmployeeMapper employeeMapper;
-    private final SnowFlakeUtil snowFlakeUtil=new SnowFlakeUtil();
 
     /**
      * 员工登录
@@ -47,7 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //密码比对
 
-        password=DigestUtils.md5DigestAsHex(password.getBytes());
+        password = DigestUtils.md5DigestAsHex(password.getBytes());
         if (!password.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
@@ -64,10 +69,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void insertEmployee(EmployeeDTO employeeDTO) {
-        Employee employee=new Employee();
-        BeanUtils.copyProperties(employeeDTO,employee);
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
         //通过雪花算法实现id
-        long tempId=snowFlakeUtil.nextId();
+        long tempId = snowFlakeUtil.nextId();
         employee.setId(tempId);
         //设置账户锁定状态,1表示启用，0表示关闭
         employee.setStatus(StatusConstant.ENABLE);
@@ -84,4 +89,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.insertEmployee(employee);
     }
 
+    @Override
+    //员工分页查询
+    public PageResult queryPageEmployee(EmployeePageQueryDTO employeePageQueryDTO) {
+        PageHelper.startPage(employeePageQueryDTO.getPage(),
+                employeePageQueryDTO.getPageSize());
+        Page<Employee> pageEmployee= employeeMapper.queryPageEmployee(employeePageQueryDTO);
+        long total = pageEmployee.getTotal();
+        List<Employee> records = pageEmployee.getResult();
+        return new PageResult(total,records);
+    }
 }
