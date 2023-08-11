@@ -51,15 +51,12 @@ public class EmployeeController {
                 jwtProperties.getAdminSecretKey(),
                 jwtProperties.getAdminTtl(),
                 claims);
-        EmployeeLoginVO employeeLoginVO = new EmployeeLoginVO();
-        BeanUtils.copyProperties(employee, employeeLoginVO);
-
-//        EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder()
-//                .id(employee.getId())
-//                .userName(employee.getUsername())
-//                .name(employee.getName())
-//                .token(token)
-//                .build();
+        EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder()
+                .id(employee.getId())
+                .userName(employee.getUsername())
+                .name(employee.getName())
+                .token(token)
+                .build();
 
         return Result.success(employeeLoginVO);
     }
