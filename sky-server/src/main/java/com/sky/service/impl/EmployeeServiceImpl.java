@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
+import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.beans.beancontext.BeanContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -72,8 +74,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);
         //通过雪花算法实现id
-        long tempId = snowFlakeUtil.nextId();
-        employee.setId(tempId);
+        //long tempId = snowFlakeUtil.nextId();
+        //employee.setId(tempId);
         //设置账户锁定状态,1表示启用，0表示关闭
         employee.setStatus(StatusConstant.ENABLE);
         //设置密码，默认为123456，使用md5加密
@@ -83,9 +85,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         //更新时间
         employee.setUpdateTime(LocalDateTime.now());
         //创建人
-        employee.setCreateUser(tempId);
+        employee.setCreateUser(BaseContext.getCurrentId());
         //修改人
-        employee.setUpdateUser(tempId);
+        employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.insertEmployee(employee);
     }
 
@@ -94,9 +96,35 @@ public class EmployeeServiceImpl implements EmployeeService {
     public PageResult queryPageEmployee(EmployeePageQueryDTO employeePageQueryDTO) {
         PageHelper.startPage(employeePageQueryDTO.getPage(),
                 employeePageQueryDTO.getPageSize());
-        Page<Employee> pageEmployee= employeeMapper.queryPageEmployee(employeePageQueryDTO);
+        Page<Employee> pageEmployee = employeeMapper.queryPageEmployee(employeePageQueryDTO);
         long total = pageEmployee.getTotal();
         List<Employee> records = pageEmployee.getResult();
-        return new PageResult(total,records);
+        return new PageResult(total, records);
+    }
+
+    @Override
+    public void enableOrDisabledEmployee(Integer status, Long id) {
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+        employeeMapper.update(employee);
+    }
+
+    @Override
+    public Employee getById(long id) {
+        Employee employee = employeeMapper.getById(id);
+        System.out.println(employee);
+        employee.setPassword("******");
+        return employee;
+    }
+
+    @Override
+    public void updateInfoEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(employee);
     }
 }
