@@ -45,7 +45,6 @@ public class AutoFillAspect {
                 Method setCreateUser = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_USER, Long.class);
                 Method setUpdateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
                 Method setUpdateUser = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER, Long.class);
-
                 //通过反射为对象复制
                 setCreateTime.invoke(entity,nowTime);
                 setCreateUser.invoke(entity,userId);
@@ -58,7 +57,6 @@ public class AutoFillAspect {
             try {
                 Method setUpdateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
                 Method setUpdateUser = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER, Long.class);
-
                 //通过反射为对象复制
                setUpdateTime.invoke(entity,nowTime);
                 setUpdateUser.invoke(entity,userId);

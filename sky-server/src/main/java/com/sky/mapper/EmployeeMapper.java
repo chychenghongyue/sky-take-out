@@ -8,14 +8,13 @@ import com.sky.enumeration.OperationType;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.springframework.stereotype.Component;
 
 @Mapper
 public interface EmployeeMapper {
 
     /**
      * 根据用户名查询员工
+     *
      * @param username
      * @return
      */
@@ -31,6 +30,7 @@ public interface EmployeeMapper {
 
     Page<Employee> queryPageEmployee(EmployeePageQueryDTO employeePageQueryDTO);
 
+    @AutoFill(OperationType.UPDATE)
     void update(Employee employee);
 
     @Select("select * from employee where id = #{id}")
