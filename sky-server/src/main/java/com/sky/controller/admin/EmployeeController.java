@@ -59,7 +59,6 @@ public class EmployeeController {
                 .build();
         return Result.success(employeeLoginVO);
     }
-
     /**
      * 退出
      *
@@ -84,7 +83,6 @@ public class EmployeeController {
         log.info("员工分页查询:{}", employeePageQueryDTO);
         return Result.success(pageResult);
     }
-
     @PostMapping("/status/{status}")
     public Result<T> enableOrDisabledEmployee(@PathVariable Integer status, Long id) {
         log.info("启用禁用员工账号:{},{}",status,id);

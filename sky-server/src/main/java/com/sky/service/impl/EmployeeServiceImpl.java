@@ -16,20 +16,19 @@ import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
-import com.sky.utils.SnowFlakeUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import java.beans.beancontext.BeanContext;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final SnowFlakeUtil snowFlakeUtil = new SnowFlakeUtil();
+    private Long tempUserId = null;
     @Autowired
     private EmployeeMapper employeeMapper;
 
@@ -60,7 +59,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
 
-        if (employee.getStatus() == StatusConstant.DISABLE) {
+        if (Objects.equals(employee.getStatus(), StatusConstant.DISABLE)) {
             //账号被锁定
             throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
         }
@@ -80,14 +79,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setStatus(StatusConstant.ENABLE);
         //设置密码，默认为123456，使用md5加密
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
-        //创建时间
-        employee.setCreateTime(LocalDateTime.now());
-        //更新时间
-        employee.setUpdateTime(LocalDateTime.now());
-        //创建人
-        employee.setCreateUser(BaseContext.getCurrentId());
-        //修改人
-        employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.insertEmployee(employee);
     }
 
@@ -116,6 +107,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeMapper.getById(id);
         System.out.println(employee);
         employee.setPassword("******");
+        tempUserId = id;
         return employee;
     }
 
@@ -123,8 +115,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void updateInfoEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);
+        employee.setId(tempUserId);
         employee.setUpdateTime(LocalDateTime.now());
         employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.update(employee);
+        tempUserId = null;
     }
 }
