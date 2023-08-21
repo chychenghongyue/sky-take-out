@@ -36,21 +36,20 @@ public class AutoFillAspect {
         if (args == null || args.length == 0) return;
         Object entity = args[0];//获取第一个参数
         //准备复制的数据
-        LocalDateTime nowTime = LocalDateTime.now();
-        Long userId = BaseContext.getCurrentId();
+        LocalDateTime nowTime=LocalDateTime.now();
+        Long userId= BaseContext.getCurrentId();
         //根据不同的操作类型，为对应的属性通过反射来获取值
-        if (operationType == OperationType.INSERT) {
+        if(operationType == OperationType.INSERT){
             try {
                 Method setCreateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_TIME, LocalDateTime.class);
                 Method setCreateUser = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_USER, Long.class);
                 Method setUpdateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
                 Method setUpdateUser = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER, Long.class);
                 //通过反射为对象复制
-                setCreateTime.invoke(entity, nowTime);
-                setCreateUser.invoke(entity, userId);
-                setUpdateTime.invoke(entity, nowTime);
-                setUpdateUser.invoke(entity, userId);
-                log.info("insert填充完毕");
+                setCreateTime.invoke(entity,nowTime);
+                setCreateUser.invoke(entity,userId);
+                setUpdateTime.invoke(entity,nowTime);
+                setUpdateUser.invoke(entity,userId);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -59,9 +58,8 @@ public class AutoFillAspect {
                 Method setUpdateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
                 Method setUpdateUser = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER, Long.class);
                 //通过反射为对象复制
-                setUpdateTime.invoke(entity, nowTime);
-                setUpdateUser.invoke(entity, userId);
-                log.info("update填充完毕");
+               setUpdateTime.invoke(entity,nowTime);
+                setUpdateUser.invoke(entity,userId);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

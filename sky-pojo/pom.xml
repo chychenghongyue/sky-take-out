@@ -23,9 +23,5 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.incode.module.minio</groupId>
-            <artifactId>incode-module-minio-minioclient</artifactId>
-        </dependency>
     </dependencies>
 </project>

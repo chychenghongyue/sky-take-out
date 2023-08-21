@@ -121,11 +121,6 @@
                 <artifactId>minio</artifactId>
                 <version>8.5.5</version>
             </dependency>
-            <dependency>
-                <groupId>org.incode.module.minio</groupId>
-                <artifactId>incode-module-minio-minioclient</artifactId>
-                <version>1.17.0</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
