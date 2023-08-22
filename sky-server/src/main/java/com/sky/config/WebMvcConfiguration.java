@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.cbor.MappingJackson2CborHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -45,6 +44,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     /**
      * 通过knife4j生成接口文档
+     *
      * @return
      */
     @Bean
@@ -65,6 +65,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     /**
      * 设置静态资源映射
+     *
      * @param registry
      */
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -75,10 +76,10 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Override
     //创建一个消息转换器
     protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2HttpMessageConverter converter=new MappingJackson2HttpMessageConverter();
+        MappingJackson2CborHttpMessageConverter converter = new MappingJackson2CborHttpMessageConverter();
         //需要为消息转换器设置一个对象转换器
         converter.setObjectMapper(new JacksonObjectMapper());
         //将消息转换器加入到容器集合中,优先使用自己的消息转换器
-        converters.add(0,converter);
+        converters.add(0, converter);
     }
 }
