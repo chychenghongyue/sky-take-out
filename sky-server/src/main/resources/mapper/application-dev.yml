@@ -1,0 +1,23 @@
+sky:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: localhost
+    port: 3306
+    database: sky_take_out
+    username: root
+    password: 123456
+  wechat:
+    appid: wx6a45701cda20dcd1
+    secret: c2a2b764fb9edb4f44bd40ff273cbe56
+minio:
+  access-key: minioadmin
+  secret-key: minioadmin
+  endpoint: http://192.168.188.128:9000
+  bucket-name: sky #存储桶
+spring:
+  redis:
+    port: 6379
+    host: 192.168.188.128
+    password: 123456
+    database: 0
+    timeout: 100
